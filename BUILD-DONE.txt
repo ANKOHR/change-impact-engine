@@ -1,0 +1,4 @@
+Pytest test count: 19 passed
+Local tested implementation commit: ef408d427a37c00e45f277f76fbfb539e012d30c
+
+Built a CPU-only, deterministic Python CLI with graph, history, impact, report and fixtures commands. The engine parses Python imports and syntactic calls, detects cycles and unresolved imports, computes synthetic Jaccard co-change coupling, walks dependency reachability, maps covering tests and declared fictional customer workflows, and ranks every affected item with confidence and evidence. JSON and Markdown reports carry the explicit static-heuristics honesty banner. The README documents quickstart, architecture, fixture and command catalogues, confidence rules, formula and limitations. All 19 pytest tests pass, and the synthetic end-to-end report was verified locally. No publication was performed. The hash above identifies the tested implementation immediately before this completion-marker commit.
