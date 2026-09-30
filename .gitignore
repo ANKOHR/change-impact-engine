@@ -1,0 +1,14 @@
+__pycache__/
+.pytest_cache/
+*.pyc
+*.egg-info/
+.venv/
+cie-prompt.txt
+cie-launch.py
+cie-codex.log
+*-prompt.txt
+*-launch.py
+*.log
+build/
+dist/
+demo/
