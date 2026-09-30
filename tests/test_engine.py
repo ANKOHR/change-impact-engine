@@ -110,3 +110,22 @@ def test_history_deduplicates_commit_files(sample):
     path = sample / "duplicates.json"
     path.write_text(dumps([{"files": ["a.py", "a.py", "b.py"]}, {"files": ["a.py"]}]), encoding="utf-8")
     assert history(path)["scores"][0]["score"] == 0.5
+
+
+def test_unknown_submodule_is_not_guessed(sample):
+    (sample / "src/unknown.py").write_text("import services.a.missing\n", encoding="utf-8")
+    g = graph(sample / "src")
+    assert any(x["target"] == "services.a.missing" for x in g["unresolved"])
+    assert not any(x["target"] == "unknown.py" for x in g["edges"])
+
+
+def test_cycle_walk_terminates(sample):
+    diff = sample / "cycle.diff"
+    diff.write_text("--- a/cycle/one.py\n+++ b/cycle/one.py\n@@ -2 +2 @@\n-from cycle import two\n+from cycle import two\n", encoding="utf-8")
+    data = impact(sample / "src", diff)
+    assert {x["file"] for x in data["affected_modules"]} == {"cycle/one.py", "cycle/two.py"}
+
+
+def test_no_history_propagation(sample):
+    (sample / "src/ops/consumer.py").write_text("from ops.release import RELEASE\n", encoding="utf-8")
+    assert "ops/consumer.py" not in {x["file"] for x in analyse(sample)["affected_modules"]}

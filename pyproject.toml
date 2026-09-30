@@ -17,3 +17,6 @@ cie = "cie.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["cie*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

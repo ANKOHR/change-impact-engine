@@ -31,9 +31,7 @@ def graph(src):
         aliases = {}
         def resolve(target, node, alias=None):
             candidate = target
-            while candidate and candidate not in modules:
-                candidate = candidate.rpartition(".")[0]
-            if candidate:
+            if candidate in modules:
                 dest = modules[candidate]
                 if dest != file:
                     edges.add((dest, file, "import"))
@@ -56,7 +54,8 @@ def graph(src):
                         unresolved.append({"file": file, "line": node.lineno, "target": base + ".*", "reason": "wildcard binding unresolved"})
                         resolve(base, node)
                     else:
-                        resolve(base + "." + item.name, node, item.asname or item.name)
+                        target = base + "." + item.name
+                        resolve(target if target in modules else base, node, item.asname or item.name)
         for node in ast.walk(tree):
             if isinstance(node, ast.Call):
                 name = ast.unparse(node.func)
@@ -100,7 +99,7 @@ def parse_diff(text, src):
             if path == "/dev/null":
                 continue
             path = re.sub(r"^[ab]/", "", path)
-            if PurePosixPath(path).is_absolute() or ".." in PurePosixPath(path).parts:
+            if PurePosixPath(path).is_absolute() or ".." in PurePosixPath(path).parts or ":" in path or "\\" in path:
                 raise ValueError("Diff paths must stay inside the snapshot")
             touched.add(path)
             current = path
